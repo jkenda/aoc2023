@@ -68,23 +68,25 @@ bool diagonal(const coord& a, const coord& b)
 int main()
 {
     string str(istreambuf_iterator<char>(cin), {});
-    numbers.reserve(str.size());
-    symbols.reserve(str.size());
-    coord_to_num.reserve(str.size());
-
     istringstream stream(str);
+    numbers.reserve(str.size());
 
     parse(stream);
     int sum = 0;
 
     for (const coord& sym : symbols) {
-        vector<int*> added;
+        if (sym.val != '*') continue;
+
+        vector<int*> adjacent;
         for (const auto& [coord, num] : coord_to_num) {
-            if (find(added.begin(), added.end(), num) != added.end()) continue;
+            if (find(adjacent.begin(), adjacent.end(), num) != adjacent.end()) continue;
             if (dist(sym, coord) == 1 || diagonal(sym, coord)) {
-                added.push_back(num);
-                sum += *num;
+                adjacent.push_back(num);
             }
+        }
+
+        if (adjacent.size() == 2) {
+            sum += *adjacent[0] * *adjacent[1];
         }
     }
     
