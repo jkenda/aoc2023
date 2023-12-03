@@ -7,15 +7,15 @@
 
 struct coord
 {
-    int row, col, val;
-    coord(int r, int c, int v) : row(r), col(c), val(v) {}
+    int row, col;
+    coord(int r, int c) : row(r), col(c) {}
 };
 
 using namespace std;
 
 vector<int> numbers;
-vector<pair<const coord, int*>> coord_to_num;
-vector<coord> symbols;
+vector<tuple<const coord, int*>> coord_to_num;
+vector<tuple<coord, char>> symbols;
 
 void parse(istream& in)
 {
@@ -32,7 +32,7 @@ void parse(istream& in)
                 in_number = true;
             }
             int& num = numbers.back();
-            coord_to_num.emplace_back(coord(row, col, 0), &num);
+            coord_to_num.emplace_back(coord(row, col), &num);
             num = 10 * num + (c - '0');
         }
         else {
@@ -41,7 +41,7 @@ void parse(istream& in)
                 n = 0;
             }
             if (c != '.' && !isspace(c)) {
-                symbols.emplace_back(row, col, c);
+                symbols.emplace_back(coord(row, col), c);
             }
         }
 
@@ -74,11 +74,11 @@ int main()
     parse(stream);
     int sum = 0;
 
-    for (const coord& sym : symbols) {
+    for (const auto& [scoord, sym] : symbols) {
         vector<int*> adjacent;
-        for (const auto& [coord, num] : coord_to_num) {
+        for (const auto& [ncoord, num] : coord_to_num) {
             if (find(adjacent.begin(), adjacent.end(), num) != adjacent.end()) continue;
-            if (dist(sym, coord) == 1 || diagonal(sym, coord)) {
+            if (dist(scoord, ncoord) == 1 || diagonal(scoord, ncoord)) {
                 adjacent.push_back(num);
                 sum += *num;
             }
