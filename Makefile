@@ -12,6 +12,12 @@ day1:
 
 day2:
 	@ocaml src/day2.ml < input/day2
+	@ocaml src/day2part2.ml < input/day2
+
+day3:
+	@mkdir -p bin
+	@g++ $(CARGS) -o bin/day3 src/day3.cpp
+	@bin/day3 < input/day3
 
 clean:
 	rm -rf bin
