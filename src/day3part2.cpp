@@ -14,10 +14,10 @@ struct coord
 using namespace std;
 
 vector<int> numbers;
-vector<tuple<const coord, int*>> coord_to_num;
+vector<tuple<const coord, size_t>> coord_to_num;
 vector<tuple<coord, char>> symbols;
 
-void parse(istream& in)
+void parse()
 {
     char c;
     int row = 0, col = 0;
@@ -25,14 +25,14 @@ void parse(istream& in)
     int n = 0;
     bool in_number = false;
 
-    while ((c = in.get()) > 0) {
+    while ((c = cin.get()) > 0) {
         if (isdigit(c)) {
             if (!in_number) {
                 numbers.push_back(0);
                 in_number = true;
             }
             int& num = numbers.back();
-            coord_to_num.emplace_back(coord(row, col), &num);
+            coord_to_num.emplace_back(coord(row, col), numbers.size() - 1);
             num = 10 * num + (c - '0');
         }
         else {
@@ -40,7 +40,7 @@ void parse(istream& in)
                 in_number = false;
                 n = 0;
             }
-            if (c != '.' && !isspace(c)) {
+            if (c != '.' && c != '\n') {
                 symbols.emplace_back(coord(row, col), c);
             }
         }
@@ -67,17 +67,13 @@ bool diagonal(const coord& a, const coord& b)
 
 int main()
 {
-    string str(istreambuf_iterator<char>(cin), {});
-    istringstream stream(str);
-    numbers.reserve(str.size());
-
-    parse(stream);
+    parse();
     int sum = 0;
 
     for (const auto& [scoord, sym] : symbols) {
         if (sym != '*') continue;
 
-        vector<int*> adjacent;
+        vector<size_t> adjacent;
         for (const auto& [ncoord, num] : coord_to_num) {
             if (find(adjacent.begin(), adjacent.end(), num) != adjacent.end()) continue;
             if (dist(scoord, ncoord) == 1 || diagonal(scoord, ncoord)) {
@@ -86,7 +82,7 @@ int main()
         }
 
         if (adjacent.size() == 2) {
-            sum += *adjacent[0] * *adjacent[1];
+            sum += numbers[adjacent[0]] * numbers[adjacent[1]];
         }
     }
     
