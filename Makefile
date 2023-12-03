@@ -11,6 +11,7 @@ day1:
 	@bin/day1 < input/day1
 
 day2:
+	@mkdir -p bin
 	@ocaml src/day2.ml < input/day2
 	@ocaml src/day2part2.ml < input/day2
 
