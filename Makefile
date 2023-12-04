@@ -22,5 +22,11 @@ day3:
 	@g++ $(CARGS) -o bin/day3 src/day3part2.cpp
 	@bin/day3 < input/day3
 
+day4:
+	@mkdir -p bin
+	@fasm src/day4.asm 1> /dev/null
+	@mv src/day4 bin
+	@bin/day4 < input/day4
+
 clean:
 	rm -rf bin
