@@ -18,11 +18,12 @@ impl Map {
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut almanac = Vec::with_capacity(640_000);
-    let _ = stdin()
-        .read_to_end(&mut almanac)?;
+    stdin().read_to_end(&mut almanac)?;
 
     let almanac = String::from_utf8(almanac)?;
-    let mut groups = almanac.split("\n\n");
+    let mut groups = almanac
+        .trim()
+        .split("\n\n");
 
     let seeds = groups
         .next()
@@ -31,31 +32,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .filter_map(|word| word.parse::<u64>().ok());
     let groups = groups;
 
-    let mut maps: [Vec<_>; 7] = Default::default();
-
-    for group in groups {
-        let mut lines = group.split("\n");
-        let name = lines
+    let maps = groups.map(|group| {
+        let mut lines = group
+            .trim()
+            .split("\n");
+        let _name = lines
             .next()
-            .ok_or("no lines")?;
+            .unwrap_or("");
         let lines = lines;
 
-        let map = match name {
-            "seed-to-soil map:"            => &mut maps[0],
-            "soil-to-fertilizer map:"      => &mut maps[1],
-            "fertilizer-to-water map:"     => &mut maps[2],
-            "water-to-light map:"          => &mut maps[3],
-            "light-to-temperature map:"    => &mut maps[4],
-            "temperature-to-humidity map:" => &mut maps[5],
-            "humidity-to-location map:"    => &mut maps[6],
-            _ => unreachable!("invalid map name: {}", name),
-        };
-
-        for line in lines {
-            if line.is_empty() {
-                continue;
-            }
-
+        lines.map(|line| {
             let &[dst, src, len] = line
                 .split_whitespace()
                 .map(|word| word.parse::<u64>().unwrap_or(0))
@@ -63,10 +49,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .as_slice()
             else { unreachable!("invalid format: {}", line) };
 
-            map.push(Map { dst, src, len });
-        }
-    }
-    let maps = maps;
+            Map { dst, src, len }
+        })
+        .collect::<Vec<_>>()
+    })
+    .collect::<Vec<_>>();
 
     let closest = seeds.map(|seed| {
         maps.iter()
