@@ -6,7 +6,6 @@ BUFSIZ equ 80000
 include "asm/io.inc"
 
 segment readable executable
-
 entry $
     read STDIN, buffer, BUFSIZ
 
@@ -80,13 +79,12 @@ entry $
 ; rax = parse()
 parse:
     mov rax, 0
-    mov rbx, r13
     mov rcx, 0
 
     ; 1st digit
-    mov dil, [buffer + rbx]
+    mov dil, [buffer + r13]
     mov al, dil
-    inc rbx
+    inc r13
     cmp al, ' '
     je .not_digit
 .digit:
@@ -97,27 +95,23 @@ parse:
     mov al, 0
 .endif:
     ; 2nd digit
-    add al, [buffer + rbx]
+    add al, [buffer + r13]
     sub al, '0'
-    inc rbx
+    inc r13
 
-    mov r13, rbx
     ret
 
 ; goto(rdi)
 goto:
-    mov rax, r13
-.loop:
     ; return if buffer overflown
-    cmp rax, r14
+    cmp r13, r14
     jge .ret
 
-    cmp dil, [buffer + rax]
+    cmp dil, [buffer + r13]
     je .ret
-    inc rax
-    jmp .loop
+    inc r13
+    jmp goto
 .ret:
-    mov r13, rax
     ret
 
 count_points:
