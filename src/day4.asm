@@ -6,17 +6,22 @@ include "asm/io.inc"
 
 entry $
     read STDIN, buffer, BUFSIZ
-    mov [len], rax
 
     cmp rax, BUFSIZ
     je err_overflow
 
+    mov r10, 0           ; points
+    mov r11, winning     ; which
+    mov r12, winning.len ; which.len
+    mov r13, 0           ; offset
+    mov r14, rax         ; len
+    mov r15, 0           ; sum
+
 .loop:
-    mov rax, [offset]
-    cmp rax, [len]
+    cmp r13, r14
     jge .ret
 
-    mov al, [buffer + rax]
+    mov al, [buffer + r13]
 
     cmp al, ' '
     je .space
@@ -26,50 +31,44 @@ entry $
 
     mov dil, ':'
     call goto
-    add [offset], 2
+    add r13, 2
     jmp .next
 
 .space:
-    mov rax, [offset]
-    inc rax
-    mov [offset], rax
-    cmp [buffer + rax], '|'
+    inc r13
+    cmp [buffer + r13], '|'
     je .pipe
     jmp .next
 
 .pipe:
-    add [offset], 2
-    mov [which], ours
-    mov [which.len], ours.len
+    add r13, 2
+    mov r11, ours
+    mov r12, ours.len
     jmp .next
 
 .newline:
     call count_points
 
+    ; skip label and reset
     mov rdi, ':'
     call goto
-    add [offset], 2
-    mov [which], winning
-    mov [which.len], winning.len
+    add r13, 2
+    mov r11, winning
+    mov r12, winning.len
     
 .next:
+    ; parse number
     call parse
 
-    ; mov rdi, rax
-    ; call puti
-    ; mov rdi, ' '
-    ; call putc
-
     ; copy number to array
-    mov rbx, [which]
-    mov rcx, [which.len]
-    mov rdx, [rcx]
-    mov [rbx + rdx], rax
-    inc qword [rcx]
+    mov rcx, [r12]
+    mov [r11 + rcx], rax
+    inc qword [r12]
     jmp .loop
 
 .ret:
-    mov rdi, [sum]
+    ; print sum
+    mov rdi, r15
     call puti
     mov rdi, 10
     call putc
@@ -80,34 +79,36 @@ entry $
 ; rax = parse()
 parse:
     mov rax, 0
-    mov rbx, [offset]
+    mov rbx, r13
     mov rcx, 0
 
+    ; 1st digit
     mov dil, [buffer + rbx]
     mov al, dil
     inc rbx
     cmp al, ' '
     je .not_digit
-
+.digit:
     sub al, '0'
     imul rax, 10
     jmp .endif
 .not_digit:
     mov al, 0
 .endif:
+    ; 2nd digit
     add al, [buffer + rbx]
     sub al, '0'
     inc rbx
 
-    mov [offset], rbx
+    mov r13, rbx
     ret
 
 ; goto(rdi)
 goto:
-    mov rax, [offset]
+    mov rax, r13
 .loop:
-    ; return -1 if buffer overflown
-    cmp rax, [len]
+    ; return if buffer overflown
+    cmp rax, r14
     jge .ret
 
     cmp dil, [buffer + rax]
@@ -115,7 +116,7 @@ goto:
     inc rax
     jmp .loop
 .ret:
-    mov [offset], rax
+    mov r13, rax
     ret
 
 count_points:
@@ -125,7 +126,6 @@ count_points:
     mov r9, [ours.len]
 .winning_loop:
     mov cl, [winning + rax]
-
 .our_loop:
     cmp cl, [ours + rbx]
     je .contains
@@ -134,7 +134,7 @@ count_points:
     jl .our_loop
     jmp .break
 .contains:
-    inc [points]
+    inc r10
 .break:
     mov rbx, 0
     inc rax
@@ -143,15 +143,17 @@ count_points:
 
     ; get shratchcard points
     mov rax, 1
-    mov cl, [points]
+    mov cl, r10b
     shl rax, cl
     shr rax, 1
 
-    add [sum], rax
+    ; add points to sum
+    add r15, rax
 
+    ; reset
     mov [winning.len], 0
     mov [ours.len], 0
-    mov [points], 0
+    mov r10, 0
 
     ret
 
@@ -172,12 +174,4 @@ winning.len dq 0
 ours     rb 32
 ours.len dq 0
 
-which dq winning
-which.len dq winning.len
-
-points db 0
-sum    dq 0
-
-len    dq 0
-offset dq 0
 buffer rb BUFSIZ
