@@ -1,8 +1,11 @@
 format ELF64 executable
 use64
 
-segment readable executable
+BUFSIZ equ 80000
+
 include "asm/io.inc"
+
+segment readable executable
 
 entry $
     read STDIN, buffer, BUFSIZ
@@ -70,8 +73,6 @@ entry $
     ; print sum
     mov rdi, r15
     call puti
-    mov rdi, 10
-    call putc
 
     exit 0
 
@@ -157,21 +158,52 @@ count_points:
 
     ret
 
+; puti(rdi)
+puti:
+    mov rax, rdi            ; number
+    mov rbx, 10             ; radix
+    lea rcx, [wbptr - 2]    ; (char*) next
+
+    cmp  rax, 0
+    setl dil    ; dil = (number < 0)
+    jge  .loop  ; if (number < 0)
+    neg  rax    ;     number = -number
+.loop:
+    cdq
+    div rbx
+    add dl, '0'
+    mov [rcx], dl
+    dec rcx
+
+    cmp rax, 0
+    jne .loop
+
+    cmp dil, 0
+    je .plus
+
+.minus:
+    mov byte [rcx], '-'
+    dec rcx
+.plus:
+    inc rcx
+    mov rdx, wbptr
+    sub rdx, rcx
+    write STDOUT, rcx, rdx
+
+    ret
+
 
 err_overflow:
-    write STDERR, err_overflow_str, err_overflow_str.len
     exit 1
 
-segment readable
-err_overflow_str db "ERROR: buffer too small", 10
-err_overflow_str.len = $ - err_overflow_str
-
 segment readable writeable
+wbuf: rb 20
+      db 10
+wbptr = $
+wblen dq 0
 
-winning     rb 32
+winning     rb 16
+ours        rb 32
 winning.len dq 0
-
-ours     rb 32
-ours.len dq 0
-
-buffer rb BUFSIZ
+ours.len    dq 0
+buffer      rb BUFSIZ
