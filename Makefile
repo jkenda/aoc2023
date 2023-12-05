@@ -1,4 +1,5 @@
 CARGS=-O3
+RARGS=-C opt-level=s -C strip=symbols -C panic=abort
 
 selection:
 	g++ $(CARGS) -o bin/selection selection.cpp
@@ -28,5 +29,9 @@ day4:
 	@mv src/day4 bin
 	@bin/day4 < input/day4
 
+day5:
+	@mkdir -p bin
+	@rustc $(RARGS) -o bin/day5 src/day5.rs
+	@bin/day5 < input/day5
 clean:
 	rm -rf bin
