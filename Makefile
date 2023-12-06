@@ -1,5 +1,5 @@
 CARGS=-O3
-RARGS=-C opt-level=s -C strip=symbols -C panic=abort
+RARGS=-C opt-level=z -C debuginfo=0 -C codegen-units=1 -C strip=symbols -C panic=abort
 
 selection:
 	g++ $(CARGS) -o bin/selection selection.cpp
@@ -32,6 +32,8 @@ day4:
 day5:
 	@mkdir -p bin
 	@rustc $(RARGS) -o bin/day5 src/day5.rs
+	@bin/day5 < input/day5
+	@rustc $(RARGS) -o bin/day5 src/day5part2.rs
 	@bin/day5 < input/day5
 clean:
 	rm -rf bin

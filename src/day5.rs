@@ -30,9 +30,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .ok_or("no groups")?
         .split(' ')
         .filter_map(|word| word.parse::<u64>().ok());
-    let groups = groups;
 
-    let maps = groups.map(|group| {
+    let groups = groups.map(|group| {
         let mut lines = group
             .trim()
             .split("\n");
@@ -47,7 +46,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .map(|word| word.parse::<u64>().unwrap_or(0))
                 .collect::<Vec<_>>()
                 .as_slice()
-            else { unreachable!("invalid format: {}", line) };
+            else { panic!("invalid format: {}", line) };
 
             Map { dst, src, len }
         })
@@ -56,9 +55,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     .collect::<Vec<_>>();
 
     let closest = seeds.map(|seed| {
-        maps.iter()
-            .fold(seed, |val, maps| {
-                maps.iter()
+        groups.iter()
+            .fold(seed, |val, group| {
+                group.iter()
                     .find_map(|map| map.map(val))
                     .unwrap_or(val)
             })
