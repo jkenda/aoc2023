@@ -42,5 +42,10 @@ day6:
 	@mv src/day6 bin
 	@bin/day6 < input/day6
 
+day7:
+	@mkdir -p bin
+	@g++ $(CARGS) -o bin/day7 src/day7.cpp
+	@bin/day7 < input/day7
+
 clean:
 	rm -rf bin
