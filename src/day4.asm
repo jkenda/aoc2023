@@ -152,49 +152,10 @@ count_points:
 
     ret
 
-; puti(rdi)
-puti:
-    mov rax, rdi            ; number
-    mov rbx, 10             ; radix
-    lea rcx, [wbptr - 2]    ; (char*) next
-
-    cmp  rax, 0
-    setl dil    ; dil = (number < 0)
-    jge  .loop  ; if (number < 0)
-    neg  rax    ;     number = -number
-.loop:
-    cdq
-    div rbx
-    add dl, '0'
-    mov [rcx], dl
-    dec rcx
-
-    cmp rax, 0
-    jne .loop
-
-    cmp dil, 0
-    je .plus
-
-.minus:
-    mov byte [rcx], '-'
-    dec rcx
-.plus:
-    inc rcx
-    mov rdx, wbptr
-    sub rdx, rcx
-    write STDOUT, rcx, rdx
-
-    ret
-
-
 err_overflow:
     exit 1
 
 segment readable writeable
-wbuf: rb 20
-      db 10
-wbptr = $
-wblen dq 0
 
 winning     rb 16
 ours        rb 32
