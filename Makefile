@@ -35,5 +35,12 @@ day5:
 	@bin/day5 < input/day5
 	@rustc $(RARGS) -o bin/day5 src/day5part2.rs
 	@bin/day5 < input/day5
+
+day6:
+	@mkdir -p bin
+	@fasm src/day6.asm 1> /dev/null
+	@mv src/day6 bin
+	@bin/day6 < input/day6
+
 clean:
 	rm -rf bin
