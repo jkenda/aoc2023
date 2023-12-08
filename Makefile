@@ -1,4 +1,4 @@
-CARGS=-O3
+CARGS=-Os
 RARGS=-C opt-level=z -C debuginfo=0 -C codegen-units=1 -C strip=symbols -C panic=abort
 
 selection:
@@ -45,6 +45,8 @@ day6:
 day7:
 	@mkdir -p bin
 	@g++ $(CARGS) -o bin/day7 src/day7.cpp
+	@bin/day7 < input/day7
+	@g++ $(CARGS) -o bin/day7 src/day7part2.cpp
 	@bin/day7 < input/day7
 
 clean:
