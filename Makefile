@@ -49,5 +49,9 @@ day7:
 	@g++ $(CARGS) -o bin/day7 src/day7part2.cpp
 	@bin/day7 < input/day7
 
+day8:
+	@mkdir -p bin
+	@ocaml src/day8.ml < input/day8
+
 clean:
 	rm -rf bin
