@@ -1,5 +1,6 @@
-CARGS=-Os
+CARGS=-Os -s
 RARGS=-C opt-level=z -C debuginfo=0 -C codegen-units=1 -C strip=symbols -C panic=abort
+OARGS=-O3
 
 selection:
 	g++ $(CARGS) -o bin/selection selection.cpp
@@ -51,7 +52,9 @@ day7:
 
 day8:
 	@mkdir -p bin
-	@ocaml src/day8.ml < input/day8
+	@ocamlopt $(OARGS) -o bin/day8 src/day8.ml
+	@bin/day8 < input/day8
+	@strip bin/day8
 
 clean:
 	rm -rf bin
