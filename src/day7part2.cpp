@@ -9,15 +9,8 @@
 
 using namespace std;
 
-enum class Card : char
-{
-    A, K, Q, T, N9, N8, N7, N6, N5, N4, N3, N2, J
-};
-
-enum class Kind : char
-{
-    FiveOfAKind, FourOfAKind, FullHouse, ThreeOfAKind, TwoPair, OnePair, HighCard
-};
+enum class Card : char { A, K, Q, T, N9, N8, N7, N6, N5, N4, N3, N2, J };
+enum class Kind : char { FiveOfAKind, FourOfAKind, FullHouse, ThreeOfAKind, TwoPair, OnePair, HighCard };
 
 struct Hand
 {
@@ -130,9 +123,8 @@ int main()
     sort(hands.begin(), hands.end());
 
     size_t sum = 0;
-    for (size_t i = 0; i < hands.size(); i++) {
+    for (size_t i = 0; i < hands.size(); i++)
         sum += hands[i].bid * (i + 1);
-    }
 
     cout << sum << '\n';
 }

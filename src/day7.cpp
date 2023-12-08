@@ -8,15 +8,8 @@
 
 using namespace std;
 
-enum class Card
-{
-    A, K, Q, J, T, N9, N8, N7, N6, N5, N4, N3, N2
-};
-
-enum class Kind
-{
-    FiveOfAKind, FourOfAKind, FullHouse, ThreeOfAKind, TwoPair, OnePair, HighCard
-};
+enum class Card { A, K, Q, J, T, N9, N8, N7, N6, N5, N4, N3, N2 };
+enum class Kind { FiveOfAKind, FourOfAKind, FullHouse, ThreeOfAKind, TwoPair, OnePair, HighCard };
 
 struct Hand
 {
@@ -43,10 +36,10 @@ struct Hand
                 default: throw invalid_argument(string(1, c[i]));
             }
         }
-        set_kind();
+        kind = get_kind();
     }
 
-    void set_kind()
+    Kind get_kind()
     {
         map<Card, size_t> counts_map;
         for (const Card cards : cards)
@@ -58,19 +51,19 @@ struct Hand
         sort(counts.begin(), counts.end(), greater<>());
 
         if (counts[0] == 5)
-            kind = Kind::FiveOfAKind;
-        else if (counts[0] == 4)
-            kind = Kind::FourOfAKind;
-        else if (counts[0] == 3 && counts[1] == 2)
-            kind = Kind::FullHouse;
-        else if (counts[0] == 3)
-            kind = Kind::ThreeOfAKind;
-        else if (counts[0] == 2 && counts[1] == 2)
-            kind = Kind::TwoPair;
-        else if (counts[0] == 2)
-            kind = Kind::OnePair;
-        else
-            kind = Kind::HighCard;
+            return Kind::FiveOfAKind;
+        if (counts[0] == 4)
+            return Kind::FourOfAKind;
+        if (counts[0] == 3 && counts[1] == 2)
+            return Kind::FullHouse;
+        if (counts[0] == 3)
+            return Kind::ThreeOfAKind;
+        if (counts[0] == 2 && counts[1] == 2)
+            return Kind::TwoPair;
+        if (counts[0] == 2)
+            return Kind::OnePair;
+
+        return Kind::HighCard;
     }
 
     bool operator<(const Hand& other) const
@@ -82,8 +75,7 @@ struct Hand
         if (kind < other.kind)
             return false;
 
-        for (int i = 0; i < 5; i++)
-        {
+        for (int i = 0; i < 5; i++) {
             if (cards[i] > other.cards[i])
                 return true;
             if (cards[i] < other.cards[i])
@@ -120,9 +112,8 @@ int main()
     sort(hands.begin(), hands.end());
 
     size_t sum = 0;
-    for (size_t i = 0; i < hands.size(); i++) {
+    for (size_t i = 0; i < hands.size(); i++)
         sum += hands[i].bid * (i + 1);
-    }
 
     cout << sum << '\n';
 }
