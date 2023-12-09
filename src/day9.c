@@ -33,17 +33,11 @@ int predict(const vec *num)
 {
     vec diff = vec_make(num->len - 1);
 
+    bool all_zero = true;
     for (size_t i = 1; i < num->len; i++) {
         int d = num->data[i] - num->data[i - 1];
+        all_zero = all_zero && (d == 0);
         vec_push(&diff, d);
-    }
-
-    bool all_zero = true;
-    for (size_t i = 0; i < diff.len; i++) {
-        if (diff.data[i] != 0) {
-            all_zero = false;
-            break;
-        }
     }
 
     int last = num->data[num->len - 1];
@@ -58,7 +52,7 @@ int main()
     vec numbers = vec_make(100);
     int sum = 0;
 
-    while (1) {
+    while (true) {
         int number;
         char c = '\n';
 
