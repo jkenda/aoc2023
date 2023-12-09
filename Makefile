@@ -58,7 +58,9 @@ day8:
 
 day9:
 	@mkdir -p bin
-	@gcc -g -o bin/day9 src/day9.c
+	@gcc $(CARGS) -o bin/day9 src/day9.c
+	@bin/day9 < input/day9
+	@gcc $(CARGS) -o bin/day9 src/day9part2.c
 	@bin/day9 < input/day9
 
 clean:
