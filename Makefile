@@ -56,5 +56,10 @@ day8:
 	@bin/day8 < input/day8
 	@strip bin/day8
 
+day9:
+	@mkdir -p bin
+	@gcc -g -o bin/day9 src/day9.c
+	@bin/day9 < input/day9
+
 clean:
 	rm -rf bin
