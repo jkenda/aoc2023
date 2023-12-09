@@ -29,22 +29,23 @@ int vec_push(vec *vec, int n)
 }
 
 
-int predict(const vec *num)
+int predict(const int *num, size_t nums)
 {
-    vec diff = vec_make(num->len - 1);
+    int diff[nums - 1];
+    size_t len = 0;
 
     bool all_zero = true;
-    for (size_t i = 1; i < num->len; i++) {
-        int d = num->data[i] - num->data[i - 1];
-        all_zero = all_zero && (d == 0);
-        vec_push(&diff, d);
+    for (size_t i = 1; i < nums; i++) {
+        int d = num[i] - num[i - 1];
+        all_zero &= (d == 0);
+        diff[len++] = d;
     }
 
-    int first = num->data[0];
+    int first = num[0];
     if (all_zero)
         return first;
     else
-        return first - predict(&diff);
+        return first - predict(diff, len);
 }
 
 int main()
@@ -62,7 +63,7 @@ int main()
         vec_push(&numbers, number);
         if (c != '\n') continue;
 
-        sum += predict(&numbers);
+        sum += predict(numbers.data, numbers.len);
         numbers.len = 0;
     }
 
