@@ -54,6 +54,7 @@ day8:
 	@mkdir -p bin
 	@ocamlopt $(OARGS) -o bin/day8 src/day8.ml
 	@bin/day8 < input/day8
+	@rm src/*.cm* src/*.o
 	@strip bin/day8
 
 day9:
@@ -62,6 +63,13 @@ day9:
 	@bin/day9 < input/day9
 	@gcc $(CARGS) -o bin/day9 src/day9part2.c
 	@bin/day9 < input/day9
+
+day10:
+	@mkdir -p bin
+	@ocamlopt $(OARGS) -o bin/day10 src/day10.ml
+	@bin/day10 < input/day10
+	@rm src/*.cm* src/*.o
+	@strip bin/day10
 
 clean:
 	rm -rf bin
