@@ -30,9 +30,8 @@ let () =
                 match String.split_on_char ':' line with
                 | [n; info] ->
                         let possible =
-                            parse_game info
-                            |> List.map possible
-                            |> List.fold_left (&&) true
+                            List.for_all possible
+                            @@ parse_game info
                         in
                         let id =
                             match String.split_on_char ' ' n with
