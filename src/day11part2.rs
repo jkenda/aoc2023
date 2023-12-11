@@ -13,26 +13,18 @@ enum Which {
 
 #[derive(Debug)]
 struct Coord {
-    row: i64,
-    col: i64,
+    row: usize,
+    col: usize,
 }
 
-impl Coord {
-    fn new(row: usize, col: usize) -> Self {
-        Self { row: row as i64, col: col as i64 }
-    }
-}
-
-const MILLION: i64 = 1_000_000;
-
-fn is_empty(space: &Vec<Vec<Space>>, which: Which, i: i64) -> bool {
+fn is_empty(space: &Vec<Vec<Space>>, which: Which, i: usize) -> bool {
     match which {
-        Which::Row => space[i as usize].iter().all(|s| *s == Space::Empty),
-        Which::Col => space.iter().all(|row| row[i as usize] == Space::Empty),
+        Which::Row => space[i].iter().all(|s| *s == Space::Empty),
+        Which::Col => space.iter().all(|row| row[i] == Space::Empty),
     }
 }
 
-fn dist(space: &Vec<Vec<Space>>, a: &Coord, b: &Coord) -> i64 {
+fn dist(empty_rows: &[usize], empty_cols: &[usize], a: &Coord, b: &Coord) -> usize {
     // sort rows and cols
     let mut rows = [a.row, b.row];
     let mut cols = [a.col, b.col];
@@ -40,18 +32,18 @@ fn dist(space: &Vec<Vec<Space>>, a: &Coord, b: &Coord) -> i64 {
     cols.sort();
 
     // count empty rows as if they were one million times larger
-    let mut row_sum: i64 = 0;
+    let mut row_sum: usize = 0;
     for row in rows[0]..rows[1] {
-        row_sum += if is_empty(space, Which::Row, row) { MILLION } else { 1 };
+        row_sum += if empty_rows.contains(&row) { 1_000_000 } else { 1 };
     }
 
     // count empty columns as if they were one million times larger
-    let mut col_sum: i64 = 0;
+    let mut col_sum: usize = 0;
     for col in cols[0]..cols[1] {
-        col_sum += if is_empty(space, Which::Col, col) { MILLION } else { 1 };
+        col_sum += if empty_cols.contains(&col) { 1_000_000 } else { 1 };
     }
 
-    col_sum.abs() + row_sum.abs()
+    col_sum + row_sum
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -73,25 +65,33 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         })
         .collect::<Vec<_>>();
 
+    let empty_rows = (0..space.len())
+        .filter(|&i| is_empty(&space, Which::Row, i))
+        .collect::<Vec<_>>();
+    let empty_cols = (0..space[0].len())
+        .filter(|&i| is_empty(&space, Which::Col, i))
+        .collect::<Vec<_>>();
+
     // get locations of galaxies
     let loc = space.iter().enumerate()
         .fold(Vec::new(), |locations, (i, row)| {
             row.iter().enumerate()
                 .fold(locations, |mut locations, (j, space)| {
                     if *space == Space::Galaxy {
-                        locations.push(Coord::new(i, j));
+                        locations.push(Coord{ row: i, col: j });
                     };
                     locations
                 })
         });
 
     // find sum of distances betewn each pair of galaxies
-    let mut sum = 0;
-    for i in 0..loc.len() {
-        for j in i+1..loc.len() {
-            sum += dist(&space, &loc[i], &loc[j]);
-        }
-    }
+    let sum = (0..loc.len())
+        .map(|i| {
+            (i+1..loc.len())
+                .map(|j| dist(&empty_rows, &empty_cols, &loc[i], &loc[j]))
+                .sum::<usize>()
+        })
+        .sum::<usize>();
 
     println!("{sum}");
     
