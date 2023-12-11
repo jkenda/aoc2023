@@ -14,8 +14,12 @@ day1:
 
 day2:
 	@mkdir -p bin
-	@ocaml src/day2.ml < input/day2
-	@ocaml src/day2part2.ml < input/day2
+	@ocamlopt $(OARGS) -o bin/day2 src/day2.ml
+	@bin/day2 < input/day2
+	@ocamlopt $(OARGS) -o bin/day2 src/day2part2.ml
+	@rm src/*.cm* src/*.o
+	@strip bin/day2
+	@bin/day2 < input/day2
 
 day3:
 	@mkdir -p bin
@@ -53,9 +57,9 @@ day7:
 day8:
 	@mkdir -p bin
 	@ocamlopt $(OARGS) -o bin/day8 src/day8.ml
-	@bin/day8 < input/day8
 	@rm src/*.cm* src/*.o
 	@strip bin/day8
+	@bin/day8 < input/day8
 
 day9:
 	@mkdir -p bin
@@ -70,6 +74,12 @@ day10:
 	@bin/day10 < input/day10
 	@rm src/*.cm* src/*.o
 	@strip bin/day10
+
+day11:
+	@mkdir -p bin
+	@rustc $(RARGS) -o bin/day11 src/day11.rs
+	@strip bin/day11
+	@bin/day11 < input/day11
 
 clean:
 	rm -rf bin
