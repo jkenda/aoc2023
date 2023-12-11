@@ -78,6 +78,8 @@ day10:
 day11:
 	@mkdir -p bin
 	@rustc $(RARGS) -o bin/day11 src/day11.rs
+	@bin/day11 < input/day11
+	@rustc $(RARGS) -o bin/day11 src/day11part2.rs
 	@strip bin/day11
 	@bin/day11 < input/day11
 
