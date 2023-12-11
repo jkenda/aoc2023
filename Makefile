@@ -2,71 +2,74 @@ CARGS=-Os -s
 RARGS=-C opt-level=2 -C debuginfo=0 -C codegen-units=1 -C strip=symbols -C panic=abort
 OARGS=-O3
 
+all: selection day01 day02 day03 day04 day05 day06 day07 day08 day09 day10 day11
+
 selection:
+	@mkdir -p bin
 	g++ $(CARGS) -o bin/selection selection.cpp
 
-day1:
+day01:
 	@mkdir -p bin
-	@gcc $(CARGS) -o bin/day1 src/day1.c
-	@bin/day1 < input/day1
-	@gcc $(CARGS) -o bin/day1 src/day1part2.c
-	@bin/day1 < input/day1
+	@gcc $(CARGS) -o bin/day01 src/day01.c
+	@bin/day01 < input/day01
+	@gcc $(CARGS) -o bin/day01 src/day01part2.c
+	@bin/day01 < input/day01
 
-day2:
+day02:
 	@mkdir -p bin
-	@ocamlopt $(OARGS) -o bin/day2 src/day2.ml
-	@bin/day2 < input/day2
-	@ocamlopt $(OARGS) -o bin/day2 src/day2part2.ml
+	@ocamlopt $(OARGS) -o bin/day02 src/day02.ml
+	@bin/day02 < input/day02
+	@ocamlopt $(OARGS) -o bin/day02 src/day02part2.ml
 	@rm src/*.cm* src/*.o
-	@strip bin/day2
-	@bin/day2 < input/day2
+	@strip bin/day02
+	@bin/day02 < input/day02
 
-day3:
+day03:
 	@mkdir -p bin
-	@g++ $(CARGS) -o bin/day3 src/day3.cpp
-	@bin/day3 < input/day3
-	@g++ $(CARGS) -o bin/day3 src/day3part2.cpp
-	@bin/day3 < input/day3
+	@g++ $(CARGS) -o bin/day03 src/day03.cpp
+	@bin/day03 < input/day03
+	@g++ $(CARGS) -o bin/day03 src/day03part2.cpp
+	@bin/day03 < input/day03
 
-day4:
+day04:
 	@mkdir -p bin
-	@fasm src/day4.asm 1> /dev/null
-	@mv src/day4 bin
-	@bin/day4 < input/day4
+	@fasm src/day04.asm 1> /dev/null
+	@mv src/day04 bin
+	@bin/day04 < input/day04
 
-day5:
+day05:
 	@mkdir -p bin
-	@rustc $(RARGS) -o bin/day5 src/day5.rs
-	@bin/day5 < input/day5
-	@rustc $(RARGS) -o bin/day5 src/day5part2.rs
-	@bin/day5 < input/day5
+	@rustc $(RARGS) -o bin/day05 src/day05.rs
+	@bin/day05 < input/day05
+	@rustc $(RARGS) -o bin/day05 src/day05part2.rs
+	@bin/day05 < input/day05
 
-day6:
+day06:
 	@mkdir -p bin
-	@fasm src/day6.asm 1> /dev/null
-	@mv src/day6 bin
-	@bin/day6 < input/day6
+	@fasm src/day06.asm 1> /dev/null
+	@mv src/day06 bin
+	@bin/day06 < input/day06
 
-day7:
+day07:
 	@mkdir -p bin
-	@g++ $(CARGS) -o bin/day7 src/day7.cpp
-	@bin/day7 < input/day7
-	@g++ $(CARGS) -o bin/day7 src/day7part2.cpp
-	@bin/day7 < input/day7
+	@g++ $(CARGS) -o bin/day07 src/day07.cpp
+	@bin/day07 < input/day07
+	@g++ $(CARGS) -o bin/day07 src/day07part2.cpp
+	@bin/day07 < input/day07
 
-day8:
+day08:
 	@mkdir -p bin
-	@ocamlopt $(OARGS) -o bin/day8 src/day8.ml
+	@ocamlopt $(OARGS) -o bin/day08 src/day08.ml
 	@rm src/*.cm* src/*.o
-	@strip bin/day8
-	@bin/day8 < input/day8
+	@strip bin/day08
+	@bin/day08 < input/day08
 
-day9:
+day09:
 	@mkdir -p bin
-	@gcc $(CARGS) -o bin/day9 src/day9.c
-	@bin/day9 < input/day9
-	@gcc $(CARGS) -o bin/day9 src/day9part2.c
-	@bin/day9 < input/day9
+	@gcc $(CARGS) -o bin/day09 src/day09.c
+	@bin/day09 < input/day09
+	@gcc $(CARGS) -o bin/day09 src/day09part2.c
+	@bin/day09 < input/day09
 
 day10:
 	@mkdir -p bin

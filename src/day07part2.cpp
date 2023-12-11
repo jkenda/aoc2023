@@ -1,3 +1,4 @@
+#include <cstdint>
 #include <initializer_list>
 #include <iostream>
 #include <algorithm>
@@ -5,12 +6,50 @@
 #include <string>
 #include <vector>
 #include <array>
-#include <map>
+#include <unordered_map>
 
 using namespace std;
 
-enum class Card : char { A, K, Q, T, N9, N8, N7, N6, N5, N4, N3, N2, J };
-enum class Kind : char { FiveOfAKind, FourOfAKind, FullHouse, ThreeOfAKind, TwoPair, OnePair, HighCard };
+template <typename T, size_t size>
+class Allocator
+{
+public:
+    using value_type = T;
+
+    template <typename U, size_t s>
+    using rebind = Allocator<U, s>;
+
+    Allocator() = default;
+
+    T* allocate(size_t n)
+    {
+        return pool;
+    }
+
+    void deallocate(T* p, size_t n)
+    {}
+
+    bool operator==(const Allocator& other) const
+    {
+        return this == &other;
+    }
+
+    bool operator!=(const Allocator& other) const
+    {
+        return !(*this == other);
+    }
+
+    size_t operator()(const T& n) const
+    {
+        return static_cast<size_t>(n);
+    }
+
+private:
+    array<T, size> pool;
+};
+
+enum class Card: uint8_t { A, K, Q, T, N9, N8, N7, N6, N5, N4, N3, N2, J };
+enum class Kind: uint8_t { FiveOfAKind, FourOfAKind, FullHouse, ThreeOfAKind, TwoPair, OnePair, HighCard };
 
 struct Hand
 {
@@ -42,25 +81,25 @@ struct Hand
 
     Kind get_kind()
     {
-        map<Card, size_t> counts_map;
+        unordered_map<Card, size_t, Allocator<Card, 5>> counts_map;
         for (const Card cards : cards)
             counts_map[cards]++;
 
         auto jokers = counts_map[Card::J];
         counts_map.erase(Card::J);
 
-        vector<size_t> counts;
-        for (const auto& [card, count] : counts_map)
+        vector<size_t, Allocator<size_t, 5>> counts;
+        for (const auto& [_, count] : counts_map)
             counts.push_back(count);
         sort(counts.begin(), counts.end(), greater<>());
-        if (counts.size() == 0) counts.push_back(0);
         counts.push_back(jokers);
 
         auto eq = [counts](initializer_list<size_t> c) {
-            return counts == vector<size_t>(c);
+            if (counts.size() != c.size()) return false;
+            return counts == vector<size_t, Allocator<size_t, 5>>(c);
         };
 
-        if (eq({5, 0}) || eq({4, 1}) || eq({3, 2}) || eq({2, 3}) || eq({1, 4}) || eq({0, 5}))
+        if (eq({5, 0}) || eq({4, 1}) || eq({3, 2}) || eq({2, 3}) || eq({1, 4}) || eq({5}))
             return Kind::FiveOfAKind;
         if (eq({4, 1, 0}) || eq({3, 1, 1}) || eq({2, 1, 2}) || eq({1, 1, 3}))
             return Kind::FourOfAKind;
