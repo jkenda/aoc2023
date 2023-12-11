@@ -2,7 +2,6 @@ use std::io::{stdin, Read};
 
 #[derive(Clone, PartialEq)]
 enum Space { Galaxy, Empty }
-enum Which { Row, Col }
 
 #[derive(Debug)]
 struct Coord {
@@ -13,7 +12,6 @@ struct Coord {
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut buffer = Vec::with_capacity(640_000);
     let _ = stdin().read_to_end(&mut buffer);
-    let buffer = buffer;
 
     // parse input - get space
     let space = String::from_utf8(buffer)?
@@ -24,24 +22,21 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .map(|c| match c {
                     '#' => Space::Galaxy,
                     '.' => Space::Empty,
-                    _   => panic!("unknown character: {}", c),
+                    _   => panic!("invalid character: {}", c),
                 })
                 .collect::<Vec<_>>()
         })
         .collect::<Vec<_>>();
+    let (height, width) = (space.len(), space[0].len());
 
-    let is_empty = |which: Which, i: usize| {
-        match which {
-            Which::Row => space[i].iter().all(|s| *s == Space::Empty),
-            Which::Col => space.iter().all(|row| row[i] == Space::Empty),
-        }
-    };
+    let row_is_empty = |i: usize| space[i].iter().all(|s| *s == Space::Empty);
+    let col_is_empty = |i: usize| space.iter().all(|row| row[i] == Space::Empty);
 
-    let empty_rows = (0..space.len())
-        .filter(|&i| is_empty(Which::Row, i))
+    let empty_rows = (0..height)
+        .filter(|&i| row_is_empty(i))
         .collect::<Vec<_>>();
-    let empty_cols = (0..space[0].len())
-        .filter(|&i| is_empty(Which::Col, i))
+    let empty_cols = (0..width)
+        .filter(|&i| col_is_empty(i))
         .collect::<Vec<_>>();
 
     // get locations of galaxies
