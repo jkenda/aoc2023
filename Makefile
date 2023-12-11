@@ -1,5 +1,5 @@
 CARGS=-Os -s
-RARGS=-C opt-level=z -C debuginfo=0 -C codegen-units=1 -C strip=symbols -C panic=abort
+RARGS=-C opt-level=2 -C debuginfo=0 -C codegen-units=1 -C strip=symbols -C panic=abort
 OARGS=-O3
 
 selection:

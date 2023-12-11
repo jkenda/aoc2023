@@ -1,15 +1,8 @@
 use std::io::{stdin, Read};
 
-#[derive(Debug, Clone, PartialEq)]
-enum Space {
-    Galaxy,
-    Empty,
-}
-
-enum Which {
-    Row,
-    Col,
-}
+#[derive(Clone, PartialEq)]
+enum Space { Galaxy, Empty }
+enum Which { Row, Col }
 
 #[derive(Debug)]
 struct Coord {
@@ -37,7 +30,7 @@ fn insert(space: &mut Vec<Vec<Space>>, which: Which, i: usize) {
             for row in space {
                 row.insert(i, Space::Empty);
             }
-        }
+        },
     }
 }
 
@@ -51,14 +44,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let buffer = buffer;
 
     // parse input - get space
-    let mut space: Vec<Vec<Space>> = String::from_utf8(buffer)?
+    let mut space = String::from_utf8(buffer)?
         .trim()
         .split('\n')
         .map(|line| {
             line.chars()
                 .map(|c| match c {
                     '#' => Space::Galaxy,
-                    _   => Space::Empty,
+                    '.' => Space::Empty,
+                    _   => panic!("unknown character: {}", c),
                 })
                 .collect::<Vec<_>>()
         })
