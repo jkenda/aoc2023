@@ -18,7 +18,7 @@ impl Map {
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut almanac = Vec::with_capacity(640_000);
-    stdin().read_to_end(&mut almanac)?;
+    let _ = stdin().read_to_end(&mut almanac);
 
     let almanac = String::from_utf8(almanac)?;
     let mut groups = almanac

@@ -1,3 +1,7 @@
+; ERROR CODES:
+; error 1: input buffer overflow - increase BUFSIZ
+; error 2: wrong format - there should be as many time as distance samples
+
 format ELF64 executable
 use64
 
@@ -199,8 +203,8 @@ _exit:
 
 segment readable writeable
 
-time     rq 32
-dist     rq 32
+time     rq 8
+dist     rq 8
 time.len dq 0
 dist.len dq 0
 

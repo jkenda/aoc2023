@@ -1,3 +1,4 @@
+#include <cstdint>
 #include <iostream>
 #include <algorithm>
 #include <stdexcept>
@@ -8,8 +9,8 @@
 
 using namespace std;
 
-enum class Card { A, K, Q, J, T, N9, N8, N7, N6, N5, N4, N3, N2 };
-enum class Kind { FiveOfAKind, FourOfAKind, FullHouse, ThreeOfAKind, TwoPair, OnePair, HighCard };
+enum class Card : uint8_t { A, K, Q, J, T, N9, N8, N7, N6, N5, N4, N3, N2 };
+enum class Kind : uint8_t { FiveOfAKind, FourOfAKind, FullHouse, ThreeOfAKind, TwoPair, OnePair, HighCard };
 
 struct Hand
 {

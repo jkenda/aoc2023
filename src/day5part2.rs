@@ -88,11 +88,11 @@ trait Combine {
 
 impl Combine for Vec<Vec<Range>> {
     fn combine(self) -> Vec<Range> {
-        let mut combined = self.into_iter()
+        let mut combined: Vec<Range> = self.into_iter()
             .flatten()
-            .fold(vec![], |mut acc, new_range| {
-                if new_range.len() > 0 && !acc.iter().any(|range: &Range| range.contains(&new_range)) {
-                    acc.push(new_range);
+            .fold(vec![], |mut acc, new| {
+                if new.len() > 0 && !acc.iter().any(|r| r.contains(&new)) {
+                    acc.push(new);
                 };
                 acc
             });
@@ -135,7 +135,7 @@ impl Combine for (Vec<Range>, Vec<Range>) {
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut almanac = Vec::with_capacity(640_000);
-    stdin().read_to_end(&mut almanac)?;
+    let _ = stdin().read_to_end(&mut almanac);
 
     let almanac = String::from_utf8(almanac)?;
     let mut groups = almanac

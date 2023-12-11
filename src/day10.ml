@@ -1,5 +1,8 @@
 open Format
 
+(* exception raised when input is not a pipe *)
+exception Not_a_pipe of char
+
 let up = (-1, 0)
 and down = (1, 0)
 and left = (0, -1)
@@ -13,7 +16,7 @@ let movement = function
     | 'J' -> up, left
     | '7' -> left, down
     | 'F' -> right, down
-    | c   -> raise @@ Failure (sprintf "%c is not a pipe" c)
+    | c   -> raise @@ Not_a_pipe c
 
 let () =
     let tiles =
