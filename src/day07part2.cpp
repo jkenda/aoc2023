@@ -1,5 +1,4 @@
 #include <cstdint>
-#include <initializer_list>
 #include <iostream>
 #include <algorithm>
 #include <stdexcept>
@@ -10,34 +9,21 @@
 
 using namespace std;
 
-template <typename T, size_t size>
+template <typename T>
 class Allocator
 {
 public:
     using value_type = T;
 
-    template <typename U, size_t s>
-    using rebind = Allocator<U, s>;
-
-    Allocator() = default;
+    constexpr Allocator() = default;
 
     T* allocate(size_t n)
     {
-        return pool;
+        return pool.data();
     }
 
     void deallocate(T* p, size_t n)
     {}
-
-    bool operator==(const Allocator& other) const
-    {
-        return this == &other;
-    }
-
-    bool operator!=(const Allocator& other) const
-    {
-        return !(*this == other);
-    }
 
     size_t operator()(const T& n) const
     {
@@ -45,7 +31,7 @@ public:
     }
 
 private:
-    array<T, size> pool;
+    array<T, 6> pool;
 };
 
 enum class Card: uint8_t { A, K, Q, T, N9, N8, N7, N6, N5, N4, N3, N2, J };
@@ -76,19 +62,38 @@ struct Hand
                 default: throw invalid_argument(string(1, c[i]));
             }
         }
-        kind = get_kind();
+        kind = _kind();
     }
 
-    Kind get_kind()
+    bool operator<(const Hand& other) const
     {
-        unordered_map<Card, size_t, Allocator<Card, 5>> counts_map;
+        if (kind > other.kind)
+            return true;
+        if (kind < other.kind)
+            return false;
+
+        for (int i = 0; i < 5; i++)
+        {
+            if (cards[i] > other.cards[i])
+                return true;
+            if (cards[i] < other.cards[i])
+                return false;
+        }
+
+        return false;
+    }
+
+private:
+    Kind _kind()
+    {
+        unordered_map<Card, size_t, Allocator<Card>> counts_map;
         for (const Card cards : cards)
             counts_map[cards]++;
 
         auto jokers = counts_map[Card::J];
         counts_map.erase(Card::J);
 
-        vector<size_t, Allocator<size_t, 5>> counts;
+        vector<size_t, Allocator<size_t>> counts;
         for (const auto& [_, count] : counts_map)
             counts.push_back(count);
         sort(counts.begin(), counts.end(), greater<>());
@@ -96,7 +101,7 @@ struct Hand
 
         auto eq = [counts](initializer_list<size_t> c) {
             if (counts.size() != c.size()) return false;
-            return counts == vector<size_t, Allocator<size_t, 5>>(c);
+            return counts == vector<size_t, Allocator<size_t>>(c);
         };
 
         if (eq({5, 0}) || eq({4, 1}) || eq({3, 2}) || eq({2, 3}) || eq({1, 4}) || eq({5}))
@@ -113,26 +118,6 @@ struct Hand
             return Kind::OnePair;
 
         return Kind::HighCard;
-    }
-
-    bool operator<(const Hand& other) const
-    {
-        // logic is inverted because enum members
-        // are listed strongest to weakest
-        if (kind > other.kind)
-            return true;
-        if (kind < other.kind)
-            return false;
-
-        for (int i = 0; i < 5; i++)
-        {
-            if (cards[i] > other.cards[i])
-                return true;
-            if (cards[i] < other.cards[i])
-                return false;
-        }
-
-        return false;
     }
 
 };
