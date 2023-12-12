@@ -1,4 +1,5 @@
 CARGS=-Os -s
+CPPARGS=-std=c++20 -Os -s
 RARGS=-C opt-level=2 -C debuginfo=0 -C codegen-units=1 -C strip=symbols -C panic=abort
 OARGS=-O3
 
@@ -6,7 +7,7 @@ all: selection day01 day02 day03 day04 day05 day06 day07 day08 day09 day10 day11
 
 selection:
 	@mkdir -p bin
-	g++ $(CARGS) -o bin/selection selection.cpp
+	g++ $(CPPARGS) -o bin/selection selection.cpp
 
 day01:
 	@mkdir -p bin
@@ -17,18 +18,18 @@ day01:
 
 day02:
 	@mkdir -p bin
-	@ocamlopt $(OARGS) -o bin/day02 src/day02.ml
+	@ocamlopt $(OARGS) -o bin/day02 -I src src/day02common.ml src/day02.ml
 	@bin/day02 < input/day02
-	@ocamlopt $(OARGS) -o bin/day02 src/day02part2.ml
+	@ocamlopt $(OARGS) -o bin/day02 -I src src/day02common.ml src/day02part2.ml
+	@bin/day02 < input/day02
 	@rm src/*.cm* src/*.o
 	@strip bin/day02
-	@bin/day02 < input/day02
 
 day03:
 	@mkdir -p bin
-	@g++ $(CARGS) -o bin/day03 src/day03.cpp
+	@g++ $(CPPARGS) -o bin/day03 src/day03.cpp
 	@bin/day03 < input/day03
-	@g++ $(CARGS) -o bin/day03 src/day03part2.cpp
+	@g++ $(CPPARGS) -o bin/day03 src/day03part2.cpp
 	@bin/day03 < input/day03
 
 day04:
@@ -52,17 +53,17 @@ day06:
 
 day07:
 	@mkdir -p bin
-	@g++ $(CARGS) -o bin/day07 src/day07.cpp
+	@g++ $(CPPARGS) -o bin/day07 src/day07.cpp
 	@bin/day07 < input/day07
-	@g++ $(CARGS) -o bin/day07 src/day07part2.cpp
+	@g++ $(CPPARGS) -o bin/day07 src/day07part2.cpp
 	@bin/day07 < input/day07
 
 day08:
 	@mkdir -p bin
 	@ocamlopt $(OARGS) -o bin/day08 src/day08.ml
+	@bin/day08 < input/day08
 	@rm src/*.cm* src/*.o
 	@strip bin/day08
-	@bin/day08 < input/day08
 
 day09:
 	@mkdir -p bin
@@ -83,8 +84,8 @@ day11:
 	@rustc $(RARGS) -o bin/day11 src/day11.rs
 	@bin/day11 < input/day11
 	@rustc $(RARGS) -o bin/day11 src/day11part2.rs
-	@strip bin/day11
 	@bin/day11 < input/day11
+	@strip bin/day11
 
 clean:
 	rm -rf bin

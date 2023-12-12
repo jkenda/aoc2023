@@ -5,12 +5,12 @@
 #include <string>
 #include <vector>
 #include <array>
-#include <map>
+#include <unordered_map>
+#include "day07common.cpp"
 
 using namespace std;
 
 enum class Card : uint8_t { A, K, Q, J, T, N9, N8, N7, N6, N5, N4, N3, N2 };
-enum class Kind : uint8_t { FiveOfAKind, FourOfAKind, FullHouse, ThreeOfAKind, TwoPair, OnePair, HighCard };
 
 struct Hand
 {
@@ -42,12 +42,12 @@ struct Hand
 
     Kind get_kind()
     {
-        map<Card, size_t> counts_map;
+        unordered_map<Card, size_t, StackAlloc<Card>> counts_map;
         for (const Card cards : cards)
             counts_map[cards]++;
 
-        vector<size_t> counts;
-        for (const auto& [card, count] : counts_map)
+        vector<size_t, StackAlloc<size_t>> counts;
+        for (const auto& [_, count] : counts_map)
             counts.push_back(count);
         sort(counts.begin(), counts.end(), greater<>());
 

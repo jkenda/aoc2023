@@ -1,19 +1,13 @@
 use std::io::{stdin, Read};
+mod day11common;
+use day11common::*;
 
-#[derive(Clone, PartialEq)]
-enum Space { Galaxy, Empty }
 enum Which { Row, Col }
 
 #[derive(Debug)]
 struct Coord {
-    row: i64,
-    col: i64,
-}
-
-impl Coord {
-    fn new(row: usize, col: usize) -> Self {
-        Self { row: row as i64, col: col as i64 }
-    }
+    row: usize,
+    col: usize,
 }
 
 fn is_empty(space: &Vec<Vec<Space>>, which: Which, i: usize) -> bool {
@@ -35,7 +29,9 @@ fn insert(space: &mut Vec<Vec<Space>>, which: Which, i: usize) {
 }
 
 fn dist(a: &Coord, b: &Coord) -> i64 {
-    (a.row - b.row).abs() + (a.col - b.col).abs()
+    let (a_row, b_row) = (a.row as i64, b.row as i64);
+    let (a_col, b_col) = (a.col as i64, b.col as i64);
+    (a_row - b_row).abs() + (a_col - b_col).abs()
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -87,7 +83,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             row.iter().enumerate()
                 .fold(locations, |mut locations, (j, space)| {
                     if *space == Space::Galaxy {
-                        locations.push(Coord::new(i, j));
+                        locations.push(Coord { row: i, col: j });
                     };
                     locations
                 })

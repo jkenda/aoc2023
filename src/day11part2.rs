@@ -1,7 +1,6 @@
 use std::io::{stdin, Read};
-
-#[derive(Clone, PartialEq)]
-enum Space { Galaxy, Empty }
+mod day11common;
+use day11common::*;
 
 #[derive(Debug)]
 struct Coord {
