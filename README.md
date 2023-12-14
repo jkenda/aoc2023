@@ -28,3 +28,11 @@ Compile and run:
 make dayX 
 ```
 where $X \in [1, 25]$
+
+| Language | Solutions |
+|----------|-----------|
+| C        |         3 |
+| C++      |         2 |
+| Rust     |         2 |
+| Fasm     |         2 |
+| OCaml    |         3 |
