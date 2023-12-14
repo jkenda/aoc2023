@@ -1,27 +1,15 @@
-use std::io::{stdin, Read};
-use std::fmt::Display;
+use std::{io::{stdin, Read}, error::Error};
 
-#[derive(Debug, PartialEq)]
+#[derive(PartialEq)]
 enum Space {
     Empty,
     MovableRock,
     ImmovableRock,
 }
 
-impl Display for Space {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Space::Empty => write!(f, "."),
-            Space::MovableRock => write!(f, "O"),
-            Space::ImmovableRock => write!(f, "#"),
-        }
-    }
-}
-
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+fn main() -> Result<(), Box<dyn Error>> {
     let mut map = Vec::with_capacity(640_000);
     let _ = stdin().read_to_end(&mut map);
-
     let map = String::from_utf8(map)?;
 
     let mut platform = map
@@ -41,24 +29,21 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let movable_rocks = platform
         .iter()
         .enumerate()
-        .map(|(i, line)| line
+        .flat_map(|(i, line)| line
             .iter()
             .enumerate()
             .filter_map(move |(j, space)| match space {
                 Space::MovableRock => Some((i, j)),
                 _ => None,
             }))
-        .flatten()
         .collect::<Vec<_>>();
 
     // slide movable rocks north until
     // they meet a rock or a wall
     let movable_rocks = movable_rocks
         .into_iter()
-        .map(move |(i, j)| {
-            let prev_i = i;
-
-            let non_empty = (0..i)
+        .map(move |(prev_i, j)| {
+            let non_empty = (0..prev_i)
                 .rev()
                 .find(|i| platform[*i][j] != Space::Empty);
             let new_i = match non_empty {
@@ -71,8 +56,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 platform[prev_i][j] = Space::Empty;
             }
             (new_i, j)
-        })
-        .collect::<Vec<_>>();
+        });
 
     let sum = movable_rocks
         .into_iter()
