@@ -34,5 +34,5 @@ where $X \in [1, 25]$
 | C        |         3 |
 | C++      |         2 |
 | Rust     |         2 |
-| Fasm     |         2 |
+| FASM     |         3 |
 | OCaml    |         3 |

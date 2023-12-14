@@ -8,10 +8,10 @@ EXIT   equ 60
 
 macro read fd, buf, len
 {
-    mov rax, READ
-    mov rdi, fd
     mov rsi, buf
     mov rdx, len
+    mov rax, READ
+    mov rdi, fd
     syscall
 }
 
@@ -29,6 +29,13 @@ macro exit code
     mov rax, EXIT
     mov rdi, code
     syscall
+}
+
+macro putc char
+{
+    push char
+    write STDOUT, rsp, 1
+    add rsp, 8
 }
 
 segment readable executable
