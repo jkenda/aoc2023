@@ -1,16 +1,20 @@
+; ERROR CODES:
+; error 1: input buffer overflow - increase BUFSIZ
+
 format ELF64 executable
 use64
 
 BUFSIZ equ 80000
 
-include "asm/io.inc"
+include "asm/util.inc"
 
 segment readable executable
 entry $
     read STDIN, buffer, BUFSIZ
 
     cmp rax, BUFSIZ
-    je err_overflow
+    mov rdi, 1
+    je _exit
 
     mov r10, 0           ; points
     mov r11, winning     ; which
@@ -151,9 +155,6 @@ count_points:
     mov r10, 0
 
     ret
-
-err_overflow:
-    exit 1
 
 segment readable writeable
 

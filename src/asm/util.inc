@@ -79,6 +79,11 @@ puti:
     ret
 
 
+; exit(rdi)
+_exit:
+    exit rdi
+
+
 segment readable writeable
 wbuf: rb 20
       db 10

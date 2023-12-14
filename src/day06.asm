@@ -6,7 +6,7 @@ format ELF64 executable
 use64
 
 BUFSIZ equ 80000
-include "asm/io.inc"
+include "asm/util.inc"
 
 segment readable executable
 entry $
@@ -194,11 +194,6 @@ calc:
 .end:
     mov rax, r15
     ret
-
-
-; exit(rdi)
-_exit:
-    exit rdi
 
 
 segment readable writeable
