@@ -103,5 +103,11 @@ day14:
 	@$(RC) $(RARGS) -o bin/day14 src/day14.rs
 	@bin/day14 < input/day14
 
+day15:
+	@mkdir -p bin
+	@$(OC) $(OARGS) -o bin/day15 src/day15.ml
+	@bin/day15 < input/day15
+	@rm -f src/*.cm* src/*.o
+
 clean:
 	rm -f -rf bin
