@@ -35,4 +35,4 @@ where $X \in [1, 25]$
 | C++      |         2 |
 | Rust     |         3 |
 | FASM     |         3 |
-| OCaml    |         3 |
+| OCaml    |         4 |

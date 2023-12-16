@@ -10,12 +10,12 @@ public:
 
     constexpr StackAlloc() = default;
 
-    T* allocate(size_t n)
+    T* allocate(size_t)
     {
         return pool;
     }
 
-    void deallocate(T* p, size_t n)
+    void deallocate(T*, size_t)
     {}
 
     size_t operator()(const T& n) const

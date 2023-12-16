@@ -7,7 +7,7 @@ RARGS=-C opt-level=2 -C debuginfo=0 -C codegen-units=1 -C strip=symbols -C panic
 OC=ocamlc
 OARGS=
 
-all: selection day01 day02 day03 day04 day05 day06 day07 day08 day09 day10 day11 day12 day13
+all: selection day01 day02 day03 day04 day05 day06 day07 day08 day09 day10 day11 day12 day13 day14 day15
 
 selection:
 	@mkdir -p bin
@@ -89,7 +89,7 @@ day11:
 
 day12:
 	@mkdir -p bin
-	@$(CC) -g $(CARGS) -o bin/day12 src/day12.c
+	@$(CC) $(CARGS) -o bin/day12 src/day12.c
 	@bin/day12 < input/day12
 
 day13:
@@ -105,7 +105,9 @@ day14:
 
 day15:
 	@mkdir -p bin
-	@$(OC) $(OARGS) -o bin/day15 src/day15.ml
+	@$(OC) $(OARGS) -o bin/day15 -I src src/day15common.ml src/day15.ml
+	@bin/day15 < input/day15
+	@$(OC) $(OARGS) -o bin/day15 -I src src/day15common.ml src/day15part2.ml
 	@bin/day15 < input/day15
 	@rm -f src/*.cm* src/*.o
 
