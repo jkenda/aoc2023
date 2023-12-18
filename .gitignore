@@ -2,3 +2,4 @@ bin/
 *.o
 *.cmi
 *.cmx
+*.cmo

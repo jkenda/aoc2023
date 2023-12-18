@@ -1,7 +1,7 @@
 let read_whole_channel ch =
     really_input_string ch (in_channel_length ch)
 
-let hash string =
+let hash =
     let aux acc c =
         (* Ignore newline characters *) 
         if c = '\n' then acc
@@ -15,5 +15,5 @@ let hash string =
             (* Set the current value to the remainder of dividing itself by 256. *)
             acc mod 256
     in
-    String.fold_left aux 0 string
+    String.fold_left aux 0
 
