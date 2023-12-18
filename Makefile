@@ -111,5 +111,10 @@ day15:
 	@bin/day15 < input/day15
 	@rm -f src/*.cm* src/*.o
 
+day16:
+	@mkdir -p bin
+	@g++ $(CXXARGS) -o bin/day16 src/day16.cpp
+	@bin/day16 < input/day16
+
 clean:
 	rm -f -rf bin
